@@ -142,25 +142,32 @@
                 audio.play();
             }
         }
+function downloadQR() {
+    var qrCodeDiv = document.getElementById('qr-code');
+    var qrCodeImage = qrCodeDiv.getElementsByTagName('img')[0].src;
 
-        function downloadQR() {
-            // Get the QR code container
-            var qrCodeDiv = document.getElementById('qr-code');
-
-            // Create an image element from the QR code container
-            var qrCodeImage = new Image();
-            qrCodeImage.src = qrCodeDiv.getElementsByTagName('img')[0].src;
+    // Convert the image URL to a Blob
+    fetch(qrCodeImage)
+        .then(response => response.blob())
+        .then(blob => {
+            // Create a Blob URL
+            var blobUrl = URL.createObjectURL(blob);
 
             // Create a temporary link element
             var link = document.createElement('a');
-            link.href = qrCodeImage.src;
+            link.href = blobUrl;
             link.download = 'qr_code.png';
 
             // Append the link to the document and trigger a click to start the download
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-        }
+
+            // Revoke the Blob URL to free up resources
+            URL.revokeObjectURL(blobUrl);
+        });
+}
+
     </script>
 
 </body>
